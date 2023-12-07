@@ -13,28 +13,12 @@
 
 ////// Chessington-Enginegton communication
 
-	// both processes write to a file created in Chessington.enginegton interface constructor, called "enginegton_log.txt"
+	// both processes write to "enginegton_log.txt"
 
-	/// Chessington-to-Enginegton:
-	// 1. "get" - asks for all legal moves in a given position 
-	// 2. "find" - asks the engine to find a move in a given position 
-	// 3. "stop" - asks the engine to stop searching
-	// 4. "term" - asks the engine process to shut down 
-
-	/// Enginegton-to-Chessington 
-	// 1. "ok"-after-"get" - the engine posts "ok" to acknowledge that it received the request
-	// 2. "ok"-after-"find" - the engine posts "ok" after it spawned a parallel search thread and initialised its search, marked by "searching" variable
-	// (the main Run() thread continues execution in case Chessington requests to "stop" or "term")
-	// 3. "ok"-after-"stop" - the engine posts "ok" at the end of search thread, after the recursive block ends. 
-	// 
-	// After each request (apart from "term"), Chessington waits until Enginegton posts "ok"; the purpose of Chessington's waiting loop is to synchronise the processes, 
-	// and to prevent both GetMoves() and FindMove() from running concurrently. 
-	// 
-	// After Enginegton writes "ok", Chessington clears the file, to signal that it is ready to receive the result. 
-	// Enginegton waits for the file to be empty before sending any result back. 
-	// 
-	// 4. "get" and "find" results - posted only if the log is empty (which means that Chessington is ready to receive the results) 
-
+	// 1. "get" - get all legal moves in a given position 
+	// 2. "find" - find a move in a given position 
+	// 3. "stop" - ask the engine to stop searching
+	// 4. "term" - ask the engine process to close 
 
 class Enginegton
 {
@@ -234,9 +218,5 @@ public:
 
 	Enginegton(const char* path, const char* priv_path);
 	void Run();
-
-	// Test functions for console build 
-	void SetupTest(const std::vector<int>& b, int t, int w_castle, int b_castle);
-	void TestSearch(const std::vector<int>& b, int t, int w_castle, int b_castle);
 };
 
